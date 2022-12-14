@@ -9,7 +9,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-#global variable to store selected countries
+# Global variable to store selected countries
 countries = ['Argentina', 'Brazil', 'Cameroon', 'United Kingdom', 'India']
 
 
