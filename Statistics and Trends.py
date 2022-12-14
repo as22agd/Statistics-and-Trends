@@ -9,6 +9,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+#global variable to store selected countries
+countries = ['Argentina', 'Brazil', 'Cameroon', 'United Kingdom', 'India']
+
 
 # Funtion to read the csv file to the dataframe
 def read_file(filename):
@@ -28,9 +31,6 @@ def read_file(filename):
     # transposing the dataframe keeping 'Country Name' as index
     df_transpose = df.set_index('Country Name').transpose()
     return df, df_transpose
-
-
-countries = ['Argentina', 'Brazil', 'Cameroon', 'United Kingdom', 'India']
 
 
 # Function to filter out 5 countries to perform the analysis
