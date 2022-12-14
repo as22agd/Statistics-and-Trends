@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 # Funtion to read the csv file to the dataframe
 def read_file(filename):
     """
-    
+
     Parameters
     ----------
     filename : csv file
@@ -25,7 +25,7 @@ def read_file(filename):
 
     """
     df = pd.read_csv(filename)
-    #transposing the dataframe keeping 'Country Name' as index
+    # transposing the dataframe keeping 'Country Name' as index
     df_transpose = df.set_index('Country Name').transpose()
     return df, df_transpose
 
@@ -33,10 +33,10 @@ def read_file(filename):
 countries = ['Argentina', 'Brazil', 'Cameroon', 'United Kingdom', 'India']
 
 
-#Function to filter out 5 countries to perform the analysis
+# Function to filter out 5 countries to perform the analysis
 def filter_barplot_data(df):
     """
-    
+
     Parameters
     ----------
     df : dataframe with years as columns
@@ -44,7 +44,7 @@ def filter_barplot_data(df):
     Returns
     -------
     df : filtered dataframe to plot bar graph of the below mentioned countries
-        
+
     """
     df = df[['Country Name', 'Indicator Name', '1995', '2005', '2015']]
     df = df[(df["Country Name"] == "Argentina") |
@@ -55,7 +55,7 @@ def filter_barplot_data(df):
     return df
 
 
-#Function to filter out 5 countries to perform the analysis
+# Function to filter out 5 countries to perform the analysis
 def filter_lineplot_data(df):
     """
 
@@ -78,10 +78,10 @@ def filter_lineplot_data(df):
     return df
 
 
-#Function to plot bar graph
-def barplot(df, label1, label2): 
+# Function to plot bar graph
+def barplot(df, label1, label2):
     """
-    
+
     Parameters
     ----------
     df : filtered dataframe to plot bar graph of the selected countries
@@ -111,15 +111,15 @@ def barplot(df, label1, label2):
     ax.bar_label(bar1, padding=2, rotation=90, fontsize=18)
     ax.bar_label(bar2, padding=2, rotation=90, fontsize=18)
     ax.bar_label(bar3, padding=2, rotation=90, fontsize=18)
-    #saving the output graph in png format
+    # saving the output graph in png format
     plt.savefig("barplot.png")
     plt.show()
 
 
-#Function to plot line graph
+# Function to plot line graph
 def line_plot(df, label1, label2):
     """
-    
+
     Parameters
     ----------
     df : filtered dataframe to plot line graph of the selected countries
@@ -138,55 +138,69 @@ def line_plot(df, label1, label2):
     for i in range(len(countries)):
         plt.plot(transpose.index, transpose[countries[i]], label=countries[i])
     plt.title(label2, size=18)
-    #labelling x and y-axis
+    # labelling x and y-axis
     plt.xlabel("Year", size=18)
     plt.ylabel(label1, size=18)
     plt.xticks(rotation=90)
     plt.legend(fontsize=18)
-    #saving the output graph in png format
+    # saving the output graph in png format
     plt.savefig("lineplot.png")
     plt.show()
 
 
+# Function to calculate the mean of CO2 emission in 5 selected countries
 def co2_emission_mean():
-    df1, df2 = read_file("C:/Users/cyber/Desktop/UoH/ADS/Assignment 2/co2_emission.csv")
-    
-    
+    """
+
+    Returns
+    -------
+    mean : dataframe with average CO2 emission of 5 countries
+
+    """
+    # reading dataframes from CO2 emission dataset
+    df1, df2 = read_file(
+        "C:/Users/cyber/Desktop/UoH/ADS/Assignment 2/co2_emission.csv")
+    # processing the dataframe to calculate mean of CO2 eimssion over the years
     data = df1.set_index('Country Name')
-    
     transpose = data.transpose()
+    # dropping irrelevent coloumns
     transpose = transpose.drop(index='Indicator Name')
-    transpose=transpose.drop(index='Country Code')
-    transpose=transpose.drop(index='Indicator Code')
-    cleaned_data=transpose.fillna(0)
-    cleaned_data = cleaned_data[["Argentina", "Brazil", "Cameroon", "United Kingdom", "India"]].mean()
-    return cleaned_data
-    
-    
-#Reading data from csv file to two dataframes using the function read_file(filename)
-forest_area, forest_area_transpose = read_file("C:/Users/cyber/Desktop/UoH/ADS/Assignment 2/forest_area.csv")
+    transpose = transpose.drop(index='Country Code')
+    transpose = transpose.drop(index='Indicator Code')
+    # replacing NaN values with 0 for calculating average emission
+    cleaned_data = transpose.fillna(0)
+    mean = cleaned_data[["Argentina", "Brazil",
+                         "Cameroon", "United Kingdom", "India"]].mean()
+    return mean
+
+
+# Reading data from csv file to two dataframes using the function read_file(filename)
+forest_area, forest_area_transpose = read_file(
+    "C:/Users/cyber/Desktop/UoH/ADS/Assignment 2/forest_area.csv")
 forest_area = filter_barplot_data(forest_area)
 
 population_growth, population_growth_transpose = read_file(
     "C:/Users/cyber/Desktop/UoH/ADS/Assignment 2/population_growth.csv")
 population_growth = filter_barplot_data(population_growth)
 
-CO2_emission, CO2_emission_transpose = read_file("C:/Users/cyber/Desktop/UoH/ADS/Assignment 2/co2_emission.csv")
+CO2_emission, CO2_emission_transpose = read_file(
+    "C:/Users/cyber/Desktop/UoH/ADS/Assignment 2/co2_emission.csv")
 CO2_emission = filter_lineplot_data(CO2_emission)
 
 access_to_electricity, access_to_electricity_transpose = read_file(
     "C:/Users/cyber/Desktop/UoH/ADS/Assignment 2/access_to_electricity.csv")
 access_to_electricity = filter_lineplot_data(access_to_electricity)
 
-#Plotting bar graph for forest area and population growth to analyse
+# Plotting bar graph for forest area and population growth to analyse
 barplot(forest_area, "Forest Area (% of land area)", "Forest Area")
 barplot(population_growth, "Population growth (annual %)", "Population Growth")
 
-#Plotting line graph for forest area and population growth to analyse
+# Plotting line graph for forest area and population growth to analyse
 line_plot(CO2_emission, "CO2 Emission in KT", "CO2 Emissions")
 line_plot(access_to_electricity,
           "Access to electricity (% of population)", "Access to electricity")
 
+# Statistical function to return the mean of CO2 emission of the countries
 mean = co2_emission_mean()
-print(mean)
-mean=mean.to_csv("mean_of_co2_emission.csv")
+# Writing the data to a csv file
+mean = mean.to_csv("mean_of_co2_emission.csv")
